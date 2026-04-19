@@ -17,7 +17,7 @@ A minimal blog-style web app demonstrating a full Stored XSS attack lifecycle â€
 
 ```bash
 # 1. Clone the repository
-git clone <YOUR_GITHUB_REPO_URL>
+git clone https://github.com/Zade907/xss-demo
 
 # 2. Move into the project folder
 cd xss-demo
