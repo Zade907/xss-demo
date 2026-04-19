@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Dev Dispatch — Fixed (Safe)</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <!--
+    FIXED VERSION
+    Content-Security-Policy header is set by the server for this route.
+    Comments are rendered with textContent in fixed.js — script tags display as plain text.
+  -->
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="/">The Dev Dispatch</a>
+  <div class="nav-links">
+    <span class="nav-badge badge-safe">✓ Fixed</span>
+    <a href="/">View Vulnerable Version →</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- SUCCESS BANNER -->
+  <div class="alert alert-safe">
+    <span class="alert-icon">✓</span>
+    <div>
+      <strong>Patched Version</strong> — This page uses <code>textContent</code> to render comments
+      and a <code>Content-Security-Policy</code> header to block inline scripts.
+      The same injected payload displays as harmless text.
+    </div>
+  </div>
+
+  <!-- BLOG POST -->
+  <div class="post-header">
+    <span class="post-tag">Web Security · 5 min read</span>
+    <h1 class="post-title">Why Input Validation Is the<br>First Line of Defence</h1>
+    <p class="post-meta">By Priya Sharma &nbsp;·&nbsp; January 15, 2025</p>
+  </div>
+
+  <div class="post-body">
+    <p>
+      Every web application trusts its users to some degree — but how much trust is too much?
+      The history of web security is littered with examples of developers who assumed their users
+      would behave, only to discover that a single malformed input could bring down an entire system.
+    </p>
+    <p>
+      Cross-Site Scripting, or XSS, remains one of the most prevalent vulnerabilities on the web.
+      The fix is simple: never render user-controlled content as HTML. Use
+      <code>textContent</code>, not <code>innerHTML</code>. Encode output at the point of rendering.
+    </p>
+
+    <!-- DIFF CARD -->
+    <div class="diff-card">
+      <div class="diff-header">
+        <div class="diff-col-label diff-vuln">⚠ Vulnerable (index.html)</div>
+        <div class="diff-col-label diff-safe">✓ Fixed (this page)</div>
+      </div>
+      <div class="diff-body">
+        <div class="diff-pane">
+          <code>div.innerHTML =<br>  <span class="hi-bad">comment.body</span>;<br>// executes scripts</code>
+        </div>
+        <div class="diff-pane">
+          <code>div.textContent =<br>  <span class="hi-good">comment.body</span>;<br>// displays as text</code>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      Submit the same XSS payload on this page — you'll see it appear in the comment section
+      as literal text rather than executing. The injected
+      <code>&lt;script&gt;</code> tag is treated as a string, not as markup.
+    </p>
+  </div>
+
+  <!-- COMMENT FORM -->
+  <p class="section-title">Leave a Comment</p>
+
+  <form class="comment-form" id="comment-form" autocomplete="off">
+    <div class="form-row">
+      <label for="name">Your name</label>
+      <input type="text" id="name" placeholder="e.g. Alice" maxlength="80" required />
+    </div>
+    <div class="form-row">
+      <label for="body">Comment <span style="font-weight:400;color:#aaa">(script tags will display as text)</span></label>
+      <textarea id="body" placeholder='Try: <script>alert("XSS Attack")</script>' required></textarea>
+    </div>
+    <button class="btn btn-primary" id="submit-btn" type="submit">Post Comment</button>
+  </form>
+
+  <!-- COMMENTS LIST -->
+  <p class="section-title">Comments</p>
+  <button class="btn btn-reset" id="reset-btn" title="Clear all comments to reset the demo">↺ Reset all comments</button>
+  <div id="comments-list"></div>
+
+</div>
+
+<script src="/js/fixed.js"></script>
+</body>
+</html>

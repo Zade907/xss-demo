@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Dev Dispatch — Vulnerable</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <!--
+    VULNERABLE VERSION
+    No Content-Security-Policy header.
+    Comments are rendered with innerHTML in vulnerable.js.
+    Attack: paste <script>alert("XSS Attack")</script> into the comment box.
+  --></head>
+  <body>
+    <nav>
+      <a class="nav-brand" href="/">The Dev Dispatch</a>
+      <div class="nav-links">
+        <span class="nav-badge badge-vuln">⚠ Vulnerable</span>
+        <a href="/fixed">View Fixed Version →</a>
+      </div>
+    </nav>
+
+    <div class="page">
+      <!-- WARNING BANNER -->
+      <div class="alert alert-vuln">
+        <span class="alert-icon">⚠</span>
+        <div>
+          <strong>Vulnerable Demo Page</strong> — This page intentionally lacks
+          input sanitization. Comments are rendered using
+          <code>innerHTML</code>, which will execute any injected JavaScript.
+          For educational use only. Do not deploy publicly.
+        </div>
+      </div>
+
+      <!-- BLOG POST -->
+      <div class="post-header">
+        <span class="post-tag">Web Security · 5 min read</span>
+        <h1 class="post-title">
+          Why Input Validation Is the<br />First Line of Defence
+        </h1>
+        <p class="post-meta">By Priya Sharma &nbsp;·&nbsp; January 15, 2025</p>
+      </div>
+
+      <div class="post-body">
+        <p>
+          Every web application trusts its users to some degree — but how much
+          trust is too much? The history of web security is littered with
+          examples of developers who assumed their users would behave, only to
+          discover that a single malformed input could bring down an entire
+          system.
+        </p>
+        <p>
+          Cross-Site Scripting, or XSS, remains one of the most prevalent
+          vulnerabilities on the web. The OWASP Top 10 has featured it
+          consistently for over a decade. Its persistence isn't due to
+          complexity — the attack is simple. Its persistence is due to the
+          assumption that user input can be trusted at face value.
+        </p>
+        <p>
+          The fix is equally simple: never render user-controlled content as
+          HTML. Use
+          <code>textContent</code>, not <code>innerHTML</code>. Encode output at
+          the point of rendering. A single API call separates a vulnerable
+          application from a safe one.
+        </p>
+
+        <!-- PAYLOAD DEMO BOX -->
+        <div class="payload-box">
+          <div class="payload-label">
+            Try injecting this payload in the comment box below
+          </div>
+          <div class="payload-code">
+            &lt;img src=x onerror="alert('XSS Attack — your data is
+            exposed!')"&gt;
+          </div>
+        </div>
+
+        <p>
+          Paste the payload above into the comment form below and submit it.
+          Reload the page. Because this version uses <code>innerHTML</code>, the
+          browser will execute the event handler for every user who visits —
+          including you, right now.
+        </p>
+      </div>
+
+      <!-- COMMENT FORM -->
+      <p class="section-title">Leave a Comment</p>
+
+      <form class="comment-form" id="comment-form" autocomplete="off">
+        <div class="form-row">
+          <label for="name">Your name</label>
+          <input
+            type="text"
+            id="name"
+            placeholder="e.g. Alice"
+            maxlength="80"
+            required
+          />
+        </div>
+        <div class="form-row">
+          <label for="body"
+            >Comment
+            <span style="font-weight: 400; color: #aaa"
+              >(try injecting a payload)</span
+            ></label
+          >
+          <textarea
+            id="body"
+            placeholder='e.g. <img src=x onerror="alert(1)">'
+            required
+          ></textarea>
+        </div>
+        <button class="btn btn-primary" id="submit-btn" type="submit">
+          Post Comment
+        </button>
+      </form>
+
+      <!-- COMMENTS LIST -->
+      <p class="section-title">Comments</p>
+      <button
+        class="btn btn-reset"
+        id="reset-btn"
+        title="Clear all comments to reset the demo"
+      >
+        ↺ Reset all comments
+      </button>
+      <div id="comments-list"></div>
+    </div>
+
+    <script src="/js/vulnerable.js"></script>
+  </body>
+</html>
